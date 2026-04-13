@@ -1,7 +1,7 @@
 function hayAgotados(productos){
     return productos.some(p=>p.stock===0)
 }
-unction todosConStock(productos) {
+function todosConStock(productos) {
  return productos.every(p => p.stock > 0);
 }
 
