@@ -1,21 +1,28 @@
-
 function mostrarProductos(productos) {
     return productos.map(p => `<p>${p.nombre} - $${p.precio}</p>`).join("");
 }
 
 function stockBajo(productos) { 
-    return productos.filter(p => p.stock < 5 && p.stock > 0); 
+    return productos
+        .filter(p => p.stock < 5 && p.stock > 0)
+        .map(p => `<p>${p.nombre} - Stock: ${p.stock}</p>`)
+        .join("");
 } 
 
 function agotados(productos) { 
-    return productos.filter(p => p.stock === 0); 
+    return productos
+        .filter(p => p.stock === 0)
+        .map(p => `<p>${p.nombre} - AGOTADO</p>`)
+        .join("");
 } 
 
 function listaPrecios(productos) { 
-    return productos.map(p => `${p.nombre}: ${p.precio}`); 
+    return productos
+        .map(p => `<p>${p.nombre}: ${p.precio}</p>`)
+        .join("");
 } 
 
-function clasificarPrecio (producto) {
+function clasificarPrecio(producto) {
     switch (true){
         case producto.precio < 50000:
             return "Economico";
@@ -26,79 +33,103 @@ function clasificarPrecio (producto) {
     }
 }
 
-
 function totalInventario(productos) {
- return productos.reduce((acc, p) => acc + (p.precio * p.stock), 0);
+    return productos.reduce((acc, p) => acc + (p.precio * p.stock), 0);
 }
 
 function totalVentas(productos) {
- return productos.reduce((acc, p) => acc + p.ventas, 0);
+    return productos.reduce((acc, p) => acc + p.ventas, 0);
 }
 
 function ordenarPorPrecio(productos) {
- return [...productos].sort((a, b) => a.precio - b.precio);
+    return [...productos].sort((a, b) => a.precio - b.precio);
 }
 
 function buscarProducto(productos, nombre) {
- return productos.find(p => p.nombre === nombre);
+    return productos.find(p => p.nombre.toLowerCase() === nombre.toLowerCase());
 }
-
 
 function hayAgotados(productos){
-    return productos.some(p=>p.stock===0)
+    return productos.some(p => p.stock === 0);
 }
+
 function todosConStock(productos) {
- return productos.every(p => p.stock > 0);
+    return productos.every(p => p.stock > 0);
 }
 
 function masVendido(productos) {
- return [...productos].sort((a, b) => b.ventas - a.ventas)[0];
+    return [...productos].sort((a, b) => b.ventas - a.ventas)[0];
 }
 
 function combinacion1(productos) {
- return productos.filter(p => p.stock > 0).sort((a, b) => a.precio - b.precio);
+    return productos
+        .filter(p => p.stock > 0)
+        .sort((a, b) => a.precio - b.precio)
+        .map(p => `<p>${p.nombre} - $${p.precio}</p>`)
+        .join("");
 }
 
 function combinacion2(productos) {
- return productos.filter(p => p.stock === 0).map(p => `Reabastecer: 
-${p.nombre}`);
+    return productos
+        .filter(p => p.stock === 0)
+        .map(p => `<p>Reabastecer: ${p.nombre}</p>`)
+        .join("");
 }
 
 function valorVentaTotal(productos) {
- return productos.reduce((acc, p) => acc + (p.precio * p.stock), 0);
+    return productos.reduce((acc, p) => acc + (p.precio * p.ventas), 0);
 }
 
 
+// DATOS
 const productos = [ 
-    { id: 1, nombre: "Mouse", categoria: "Periferico", precio: 50000,stock: 10, ventas: 12 },
+    { id: 1, nombre: "Mouse", categoria: "Periferico", precio: 50000, stock: 10, ventas: 12 },
     { id: 2, nombre: "Teclado", categoria: "Periferico", precio: 120000, stock: 5, ventas: 7 },
     { id: 3, nombre: "Monitor", categoria: "Pantalla", precio: 800000, stock: 2, ventas: 4 }, 
     { id: 4, nombre: "USB", categoria: "Accesorio", precio: 30000, stock: 0, ventas: 15 },
-     { id: 5, nombre: "Diadema", categoria: "Audio", precio: 90000, stock: 8, ventas: 6 } 
+    { id: 5, nombre: "Diadema", categoria: "Audio", precio: 90000, stock: 8, ventas: 6 } 
 ];
 
-const resultado = document.getElementByID("resultado")
 
-// MENU (While + switch)
+// CORREGIDO
+const resultado = document.getElementById("resultado");
 
+
+// REPORTE
+function mostrarReporte() {
+    const mas = masVendido(productos);
+
+    resultado.innerHTML = `
+        <h3>📊 Reporte</h3>
+        <p>Total inventario: $${totalInventario(productos)}</p>
+        <p>Total ventas: ${totalVentas(productos)}</p>
+        <p>Producto más vendido: ${mas.nombre}</p>
+        <p>¿Hay agotados?: ${hayAgotados(productos) ? "Sí" : "No"}</p>
+    `;
+}
+
+
+// MENU
 function menu () {
 
     let opcion;
 
     while (opcion !== "0") {
-        opcion = prompt("1. Productos, 2. Stock bajo, 3. Agotados, 4. Reporte, 0. Salir");
+        opcion = prompt(
+            "1. Productos\n2. Stock bajo\n3. Agotados\n4. Reporte\n0. Salir"
+        );
 
         switch(opcion) {
             case "1":
-                resultado.innerHTML = mostrarProductos(Productos);
+                resultado.innerHTML = mostrarProductos(productos);
             break;
 
             case "2":
-                resultado.innerHTML = stockBajo(Productos);
+                resultado.innerHTML = stockBajo(productos);
             break;
 
             case "3":
-                resultado.innerHTML = agotados(Productos);
+                resultado.innerHTML = agotados(productos);
             break;
             
             case "4":
@@ -106,8 +137,11 @@ function menu () {
             break;
 
             case "0":
-                resultado.innerHTML = "<p>Saliendo...</p>"
+                resultado.innerHTML = "<p>Saliendo...</p>";
             break;
+
+            default:
+                alert("Opción inválida");
         }
     }
 }
