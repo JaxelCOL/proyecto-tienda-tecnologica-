@@ -1,6 +1,4 @@
 
-
-
 function mostrarProductos(productos) {
     return productos.map(p => `<p>${p.nombre} - $${p.precio}</p>`).join("");
 }
