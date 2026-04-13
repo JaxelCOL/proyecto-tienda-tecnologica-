@@ -60,6 +60,17 @@ function todosConStock(productos) {
 function masVendido(productos) {
     return [...productos].sort((a, b) => b.ventas - a.ventas)[0];
 }
+function productoMasCaro(productos) {
+    return [...productos].sort((a, b) => b.precio - a.precio)[0];
+}
+
+function productoMasBarato(productos) {
+    return [...productos].sort((a, b) => a.precio - b.precio)[0];
+}
+
+function cantidadAgotados(productos) {
+    return productos.filter(p => p.stock === 0).length;
+}
 
 function combinacion1(productos) {
     return productos
@@ -95,29 +106,36 @@ const productos = [
 const resultado = document.getElementById("resultado");
 
 
-// REPORTE
 function mostrarReporte() {
-    const mas = masVendido(productos);
+
+    const masVendidoProd = masVendido(productos);
+    const caro = productoMasCaro(productos);
+    const barato = productoMasBarato(productos);
 
     resultado.innerHTML = `
-        <h3>📊 Reporte</h3>
-        <p>Total inventario: $${totalInventario(productos)}</p>
-        <p>Total ventas: ${totalVentas(productos)}</p>
-        <p>Producto más vendido: ${mas.nombre}</p>
-        <p>¿Hay agotados?: ${hayAgotados(productos) ? "Sí" : "No"}</p>
+        <h3>REPORTE FINAL</h3>
+
+        <p>Producto más caro: ${caro.nombre}</p>
+        <p>Producto más barato: ${barato.nombre}</p>
+        <p> Producto más vendido: ${masVendidoProd.nombre}</p>
+
+        <p>Valor total inventario: $${totalInventario(productos)}</p>
+        <p>Total unidades vendidas: ${totalVentas(productos)}</p>
+        <p>Productos agotados: ${cantidadAgotados(productos)}</p>
     `;
 }
-
 
 // MENU
 function menu () {
 
-    let opcion;
+    let opcion = ""; // iniciar valor
 
     while (opcion !== "0") {
         opcion = prompt(
             "1. Productos\n2. Stock bajo\n3. Agotados\n4. Reporte\n0. Salir"
         );
+
+        if (opcion === null) return; // cancela prompt
 
         switch(opcion) {
             case "1":
